@@ -326,7 +326,7 @@ class ConfigurationTest extends TestCase
         yield 'with constants' => [
             [
                 OutputInterface::VERBOSITY_NORMAL => Logger::NOTICE,
-                OutputInterface::VERBOSITY_VERBOSE => 'info',
+                'verbosity_verbose' => 'info',
                 OutputInterface::VERBOSITY_VERY_VERBOSE => Logger::INFO
             ],
             [
