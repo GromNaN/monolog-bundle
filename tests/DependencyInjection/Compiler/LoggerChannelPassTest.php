@@ -26,6 +26,7 @@ class LoggerChannelPassTest extends TestCase
     {
         $container = $this->getContainer();
         $this->assertTrue($container->hasDefinition('monolog.logger.test'), '->process adds a logger service for tagged service');
+        $this->assertTrue($container->getDefinition('monolog.logger.test')->hasTag('monolog.logger_channel'), '->process tags the new logger service with monolog.logger_channel');
 
         $service = $container->getDefinition('test');
         $this->assertEquals('monolog.logger.test', (string) $service->getArgument(1), '->process replaces the logger by the new one');

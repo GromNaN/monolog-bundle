@@ -106,9 +106,13 @@ class LoggerChannelPass implements CompilerPassInterface
 
     /**
      * @return array
+     *
+     * @deprecated Since 3.10 without replacement
      */
     public function getChannels()
     {
+        trigger_deprecation('symfony/monolog-bundle', '3.10', 'The "%s()" method is deprecated without replacement.', __METHOD__);
+
         return $this->channels;
     }
 
@@ -129,17 +133,22 @@ class LoggerChannelPass implements CompilerPassInterface
     }
 
     /**
-     * Create new logger from the monolog.logger_prototype.
+     * Create a new logger from the monolog.logger_prototype.
      *
      * @return void
      */
     protected function createLogger(string $channel, string $loggerId, ContainerBuilder $container)
     {
-        if (!\in_array($channel, $this->channels)) {
+        if ($container->hasDefinition($loggerId)) {
+            $logger = $container->getDefinition($loggerId);
+        } else {
             $logger = new ChildDefinition('monolog.logger_prototype');
             $logger->replaceArgument(0, $channel);
             $container->setDefinition($loggerId, $logger);
             $this->channels[] = $channel;
+        }
+        if (!$logger->hasTag('monolog.logger_channel')) {
+            $logger->addTag('monolog.logger_channel');
         }
 
         $container->registerAliasForArgument($loggerId, LoggerInterface::class, $channel.'.logger');
